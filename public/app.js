@@ -372,11 +372,34 @@ class TacticalRadioApp {
         callsign: enteredCallsign
       }));
     } else {
-      setTimeout(() => {
-        this.playBusyTone();
-        consoleEl.className = 'live-auth-terminal error';
-        consoleEl.innerHTML = `<span class="terminal-prompt">⚠️</span> NETWORK ERROR: SECURE GATEWAY OFFLINE. RETRYING LINK...`;
-      }, 500);
+      // Standalone Static / GitHub Pages Fallback
+      const staticCredentials = new Map([
+        ['242570066948', { id: '242570066948', passcode: 'MOD@2026', callsign: 'GARUD-1', clearance: 'LEVEL 5 (TOP SECRET)', corps: 'HQ INTEGRATED DEFENCE STAFF' }],
+        ['242570088192', { id: '242570088192', passcode: 'MOD@2026', callsign: 'PARA-SF-3', clearance: 'LEVEL 4 (SECRET)', corps: 'ARMY SPECIAL FORCES' }],
+        ['242570099411', { id: '242570099411', passcode: 'MOD@2026', callsign: 'MARCOS-6', clearance: 'LEVEL 4 (SECRET)', corps: 'NAVY COMBAT DIVERS' }]
+      ]);
+
+      const rec = staticCredentials.get(enteredId);
+      if (rec && enteredPass === (rec.passcode || 'MOD@2026')) {
+        setTimeout(() => {
+          this.onAuthSuccess({
+            id: '•••• •••• ' + enteredId.slice(-4),
+            callsign: enteredCallsign || rec.callsign,
+            clearance: rec.clearance,
+            corps: rec.corps
+          });
+        }, 250);
+      } else {
+        setTimeout(() => {
+          this.playBusyTone();
+          consoleEl.className = 'live-auth-terminal error';
+          consoleEl.innerHTML = `<span class="terminal-prompt">⚠️</span> ACCESS REJECTED: INVALID DEFENCE ID OR PASSCODE.`;
+          if (deck) {
+            deck.classList.add('rejected');
+            setTimeout(() => deck.classList.remove('rejected'), 500);
+          }
+        }, 250);
+      }
     }
   }
 
@@ -406,11 +429,21 @@ class TacticalRadioApp {
         stationId: enteredStation
       }));
     } else {
-      setTimeout(() => {
-        this.playBusyTone();
-        consoleEl.className = 'live-auth-terminal error';
-        consoleEl.innerHTML = `<span class="terminal-prompt">⚠️</span> SERVICE GATEWAY TIMEOUT. RETRYING ENCRYPTED LINK...`;
-      }, 500);
+      // Standalone Static / GitHub Pages Fallback
+      if (enteredKey === 'MOD@SERVICE#2026' || enteredKey === 'MOD@2026') {
+        setTimeout(() => {
+          this.onServiceAuthSuccess({
+            stationId: enteredStation,
+            unitDesignation: enteredDept
+          });
+        }, 250);
+      } else {
+        setTimeout(() => {
+          this.playBusyTone();
+          consoleEl.className = 'live-auth-terminal error';
+          consoleEl.innerHTML = `<span class="terminal-prompt">⚠️</span> ACCESS REJECTED: INVALID SERVICE MASTER KEY.`;
+        }, 250);
+      }
     }
   }
 
@@ -955,47 +988,60 @@ class TacticalRadioApp {
      WEBSOCKET REAL-TIME COMMS & CLOUD RESILIENCE
   ========================================================= */
   initWebSocket() {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
-
-    this.ws = new WebSocket(wsUrl);
-    this.ws.binaryType = 'arraybuffer';
-
-    this.ws.onopen = () => {
-      this.dom.connStatus.textContent = 'ONLINE';
+    if (window.location.host.includes('github.io')) {
+      this.dom.connStatus.textContent = 'SECURE SDR (PWA)';
       this.dom.connStatus.style.color = '#33ff88';
       this.dom.ledPwr.classList.add('active');
+      return;
+    }
 
-      if (this.isAuthenticated) {
-        this.ws.send(JSON.stringify({
-          type: 'UPDATE_PROFILE',
-          callsign: this.callsign,
-          employeeId: this.employeeId,
-          location: this.gpsGrid
-        }));
-      }
-    };
+    try {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}`;
 
-    this.ws.onmessage = async (event) => {
-      if (event.data instanceof ArrayBuffer) {
-        this.handleIncomingAudioChunk(event.data);
-        return;
-      }
+      this.ws = new WebSocket(wsUrl);
+      this.ws.binaryType = 'arraybuffer';
 
-      try {
-        const msg = JSON.parse(event.data);
-        this.handleServerMessage(msg);
-      } catch (err) {
-        console.error('[BHARAT-COM] Parse error:', err);
-      }
-    };
+      this.ws.onopen = () => {
+        this.dom.connStatus.textContent = 'ONLINE';
+        this.dom.connStatus.style.color = '#33ff88';
+        this.dom.ledPwr.classList.add('active');
 
-    this.ws.onclose = () => {
-      this.dom.connStatus.textContent = 'RECONNECTING';
-      this.dom.connStatus.style.color = '#ffaa00';
-      this.dom.ledPwr.classList.remove('active');
-      setTimeout(() => this.initWebSocket(), 3000);
-    };
+        if (this.isAuthenticated) {
+          this.ws.send(JSON.stringify({
+            type: 'UPDATE_PROFILE',
+            callsign: this.callsign,
+            employeeId: this.employeeId,
+            location: this.gpsGrid
+          }));
+        }
+      };
+
+      this.ws.onmessage = async (event) => {
+        if (event.data instanceof ArrayBuffer) {
+          this.handleIncomingAudioChunk(event.data);
+          return;
+        }
+
+        try {
+          const msg = JSON.parse(event.data);
+          this.handleServerMessage(msg);
+        } catch (err) {
+          console.error('[BHARAT-COM] Parse error:', err);
+        }
+      };
+
+      this.ws.onclose = () => {
+        this.dom.connStatus.textContent = 'STANDALONE SDR';
+        this.dom.connStatus.style.color = '#ffaa00';
+        this.dom.ledPwr.classList.remove('active');
+        setTimeout(() => this.initWebSocket(), 5000);
+      };
+    } catch (e) {
+      this.dom.connStatus.textContent = 'STANDALONE SDR';
+      this.dom.connStatus.style.color = '#33ff88';
+      this.dom.ledPwr.classList.add('active');
+    }
   }
 
   handleServerMessage(msg) {
