@@ -1,0 +1,25 @@
+{
+  "name": "BHARAT-COM // MoD Tri-Services Tactical Radio",
+  "short_name": "BharatCom",
+  "description": "Tactical Software Defined Radio (SDR) Intercom - Ministry of Defence, Government of India",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080a0c",
+  "theme_color": "#101418",
+  "icons": [
+    {
+      "src": "/mod-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "government", "communication"]
+}

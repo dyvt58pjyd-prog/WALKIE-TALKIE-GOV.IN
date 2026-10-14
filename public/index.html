@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#101418">
+  <meta name="description" content="BHARAT-COM // Tactical Software Defined Radio (SDR) Intercom - Ministry of Defence, Government of India">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BharatCom">
+
+  <!-- Official Ministry of Defence Tri-Services Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="alternate icon" href="mod-logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="mod-logo.png">
+  <link rel="manifest" href="manifest.json">
+
+  <title>BHARAT-COM // रक्षा मंत्रालय | Ministry of Defence - Government of India</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,500&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // OPSEC & Cache Buster: purge all legacy service worker caches and unregister
+    if ('caches' in window) {
+      caches.keys().then(function(keys) {
+        keys.forEach(function(k) { caches.delete(k); });
+      });
+    }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        regs.forEach(function(r) { r.unregister(); });
+      });
+    }
+  </script>
+</head>
+<body>
+  <!-- ========================================================
+       HQ INTEGRATED DEFENCE STAFF // CENTRAL TACTICAL COMMAND GATEWAY
+       HARDWARE-LEVEL AUTHENTICATION & MULTI-FACTOR BIOMETRIC TERMINAL
+  ======================================================== -->
+  <div class="mod-hard-login-overlay" id="modLoginOverlay">
+    <div class="login-radar-backdrop">
+      <div class="radar-circle rc1"></div>
+      <div class="radar-circle rc2"></div>
+      <div class="radar-circle rc3"></div>
+      <div class="radar-sweep-hand"></div>
+      <div class="radar-grid-lines"></div>
+    </div>
+
+    <div class="command-terminal-deck">
+      <!-- TERMINAL MASTHEAD -->
+      <div class="terminal-top-header">
+        <div class="header-flag-strip">
+          <span class="flag-stripe army"></span>
+          <span class="flag-stripe navy"></span>
+          <span class="flag-stripe iaf"></span>
+        </div>
+        <div class="header-titles-group">
+          <span class="hindi-mast">भारत सरकार &bull; रक्षा मंत्रालय &bull; एकीकृत रक्षा स्टाफ मुख्यालय</span>
+          <h1 class="eng-mast">HQ INTEGRATED DEFENCE STAFF &bull; MINISTRY OF DEFENCE</h1>
+          <span class="system-designation">BHARAT-COM TACTICAL SOFTWARE DEFINED RADIO // SECURE CRYPTO GATEWAY</span>
+        </div>
+        <div class="terminal-threat-badge">
+          <span class="threat-dot"></span>
+          <span class="threat-txt">DEFCON 2 // ARMED</span>
+        </div>
+      </div>
+
+      <!-- DUAL-BAY COCKPIT -->
+      <div class="cockpit-bays-wrapper">
+        <!-- LEFT BAY: BIOMETRIC & CRYPTOGRAPHIC TELEMETRY -->
+        <div class="cockpit-left-bay">
+          <!-- Tri-Services Shield Hero -->
+          <div class="shield-display-chamber">
+            <div class="chamber-crosshair-h"></div>
+            <div class="chamber-crosshair-v"></div>
+            <div class="shield-aura-ring"></div>
+            <img src="mod-logo.png" alt="MoD Tri-Services Shield Emblem" class="mod-shield-hero-logo">
+            <div class="laser-scanner-beam"></div>
+          </div>
+
+          <!-- Live Zulu & IST Clocks -->
+          <div class="telemetry-clocks-card">
+            <div class="clock-col">
+              <span class="clk-lbl">IST TIME:</span>
+              <span class="clk-val" id="loginClockIst">--:--:--</span>
+            </div>
+            <div class="clock-divider">|</div>
+            <div class="clock-col">
+              <span class="clk-lbl">ZULU (UTC):</span>
+              <span class="clk-val text-zulu" id="loginClockZulu">--:--:--Z</span>
+            </div>
+          </div>
+
+          <!-- Interactive Biometric Fingerprint Scanner Module -->
+          <div class="biometric-scanner-module" id="bioScannerPad" title="Touch/Click to scan operator biometrics">
+            <div class="bio-pad-bezel">
+              <div class="fingerprint-sensor-glass">
+                <svg viewBox="0 0 24 24" class="fp-icon" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                  <path d="M12 2a10 10 0 0 0-7.2 17M12 2a10 10 0 0 1 7.2 17M12 6a6 6 0 0 0-4.3 10.2M12 6a6 6 0 0 1 4.3 10.2M12 10a2 2 0 0 0-1.4 3.4M12 10a2 2 0 0 1 1.4 3.4M12 14v4M12 2v2"></path>
+                </svg>
+                <div class="bio-scanline" id="bioScanLine"></div>
+              </div>
+            </div>
+            <div class="bio-label-group">
+              <span class="bio-status" id="bioStatusTxt">TAP TO ENGAGE BIOMETRICS</span>
+              <span class="bio-sub">OPTICAL FINGERPRINT / SENSOR 01</span>
+            </div>
+          </div>
+
+          <!-- Statutory Classification Notice -->
+          <div class="classification-strip">
+            <div class="class-tag">TOP SECRET // अति गोपनीय</div>
+            <div class="class-body">UNAUTHORIZED ATTEMPTS ARE PROSECUTED UNDER THE OFFICIAL SECRETS ACT, 1923.</div>
+          </div>
+        </div>
+
+        <!-- RIGHT BAY: COMMAND AUTHORIZATION & TACTICAL PINPAD -->
+        <div class="cockpit-right-bay">
+          <!-- Auth Role Mode Switcher -->
+          <div class="auth-mode-selector">
+            <button type="button" class="auth-mode-tab active" id="tabFieldMode">
+              <span class="tab-icon">🪖</span>
+              <span class="tab-label">FIELD OPERATOR</span>
+            </button>
+            <button type="button" class="auth-mode-tab" id="tabServiceMode">
+              <span class="tab-icon">🛡️</span>
+              <span class="tab-label">SERVICE DEPARTMENT</span>
+            </button>
+          </div>
+
+          <!-- PANE 1: FIELD OPERATOR LOGIN -->
+          <div class="auth-role-pane active" id="paneFieldOperator">
+            <form class="command-auth-form" id="modAuthForm" autocomplete="off">
+              <!-- Input 1: Employee ID -->
+              <div class="form-control-block">
+                <label for="inputEmpId"><span class="lbl-badge">01</span> DEFENCE EMPLOYEE ID NUMBER</label>
+                <div class="input-housing">
+                  <span class="input-icon">🪪</span>
+                  <input 
+                    type="text" 
+                    id="inputEmpId" 
+                    name="defenceEmpIdField"
+                    class="auth-terminal-input" 
+                    placeholder="ENTER 12-DIGIT DEFENCE ID" 
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    required 
+                    maxlength="16"
+                    inputmode="numeric"
+                    value=""
+                  >
+                </div>
+              </div>
+
+              <!-- Input 2: Security Passcode -->
+              <div class="form-control-block">
+                <label for="inputPasscode"><span class="lbl-badge">02</span> SECURITY PASSCODE / PIN</label>
+                <div class="input-housing">
+                  <span class="input-icon">🔒</span>
+                  <input 
+                    type="password" 
+                    id="inputPasscode" 
+                    name="defenceSecurityPinField"
+                    class="auth-terminal-input" 
+                    placeholder="ENTER SECURITY PIN" 
+                    autocomplete="new-password"
+                    required
+                    value=""
+                  >
+                </div>
+              </div>
+
+              <!-- Input 3: Combat Callsign -->
+              <div class="form-control-block">
+                <label for="inputCallsign"><span class="lbl-badge">03</span> TACTICAL CALLSIGN (OPTIONAL)</label>
+                <div class="input-housing">
+                  <span class="input-icon">🎖️</span>
+                  <input 
+                    type="text" 
+                    id="inputCallsign" 
+                    name="defenceCallsignField"
+                    class="auth-terminal-input" 
+                    placeholder="E.G. GARUD-1, PARA-SF" 
+                    autocomplete="off"
+                    maxlength="14"
+                    value=""
+                  >
+                </div>
+              </div>
+
+              <!-- ON-SCREEN TACTICAL MILITARY PINPAD (0-9 + BACK + CLEAR) -->
+              <div class="tactical-pinpad-container">
+                <div class="pinpad-grid">
+                  <button type="button" class="pin-key" data-val="1">1</button>
+                  <button type="button" class="pin-key" data-val="2">2</button>
+                  <button type="button" class="pin-key" data-val="3">3</button>
+                  <button type="button" class="pin-key" data-val="4">4</button>
+                  <button type="button" class="pin-key" data-val="5">5</button>
+                  <button type="button" class="pin-key" data-val="6">6</button>
+                  <button type="button" class="pin-key" data-val="7">7</button>
+                  <button type="button" class="pin-key" data-val="8">8</button>
+                  <button type="button" class="pin-key" data-val="9">9</button>
+                  <button type="button" class="pin-key special-key" id="btnPinClear">CLR</button>
+                  <button type="button" class="pin-key" data-val="0">0</button>
+                  <button type="button" class="pin-key special-key" id="btnPinBack">⌫</button>
+                </div>
+              </div>
+
+              <!-- REAL-TIME CONSOLE TERMINAL -->
+              <div class="live-auth-terminal" id="authTerminalConsole">
+                <span class="terminal-prompt">&gt;</span> TERMINAL READY. AWAITING OPERATOR IDENTITY...
+              </div>
+
+              <!-- ACTION SUBMIT BUTTON -->
+              <button type="submit" class="btn-engage-terminal" id="btnAuthSubmit">
+                <span class="engage-glow"></span>
+                <span class="engage-text">⚡ VERIFY &amp; ENGAGE TACTICAL LINK</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- PANE 2: SERVICE DEPARTMENT MASTER CONSOLE LOGIN -->
+          <div class="auth-role-pane" id="paneServiceDepartment" style="display: none;">
+            <form class="command-auth-form" id="serviceAuthForm" autocomplete="off">
+              <div class="service-notice-box">
+                <div class="notice-title">🛡️ SERVICE OPERATIONS &amp; SURVEILLANCE UNIT</div>
+                <div class="notice-body">Central Command authority for ID assignment, all-channel wiretapping, carrier overrides, and network management.</div>
+              </div>
+
+              <!-- Service Master Key -->
+              <div class="form-control-block">
+                <label for="inputServiceKey"><span class="lbl-badge">SEC</span> SERVICE MASTER KEY / PIN</label>
+                <div class="input-housing">
+                  <span class="input-icon">🔑</span>
+                  <input 
+                    type="password" 
+                    id="inputServiceKey" 
+                    name="c4iServiceKeyField"
+                    class="auth-terminal-input" 
+                    placeholder="ENTER SERVICE MASTER KEY" 
+                    autocomplete="new-password"
+                    required
+                    value=""
+                  >
+                </div>
+              </div>
+
+              <!-- Department Designation -->
+              <div class="form-control-block">
+                <label for="selectServiceDept"><span class="lbl-badge">DIV</span> SERVICE DEPARTMENT DIVISION</label>
+                <div class="input-housing select-housing">
+                  <span class="input-icon">🏢</span>
+                  <select id="selectServiceDept" class="auth-terminal-input auth-select">
+                    <option value="DIRECTORATE OF COMMUNICATIONS &amp; CYBER DEFENCE (HQ IDS)">HQ IDS - DIRECTORATE OF COMMS &amp; CYBER DEFENCE</option>
+                    <option value="MINISTRY OF DEFENCE - C4I SURVEILLANCE WING">MINISTRY OF DEFENCE - C4I SURVEILLANCE WING</option>
+                    <option value="SIGNALS DIRECTORATE - GENERAL STAFF BRANCH">ARMY HEADQUARTERS - SIGNALS DIRECTORATE</option>
+                    <option value="DRDO TACTICAL EW &amp; INTERCEPT LABS">DRDO TACTICAL EW &amp; INTERCEPT LABS</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Station Identifier -->
+              <div class="form-control-block">
+                <label for="inputServiceStation"><span class="lbl-badge">ID</span> SERVICE STATION CALLSIGN</label>
+                <div class="input-housing">
+                  <span class="input-icon">📡</span>
+                  <input 
+                    type="text" 
+                    id="inputServiceStation" 
+                    name="c4iServiceStationCallsign"
+                    class="auth-terminal-input" 
+                    placeholder="ENTER STATION CALLSIGN" 
+                    autocomplete="off"
+                    maxlength="18"
+                    value=""
+                  >
+                </div>
+              </div>
+
+              <!-- REAL-TIME CONSOLE TERMINAL -->
+              <div class="live-auth-terminal" id="serviceTerminalConsole">
+                <span class="terminal-prompt">&gt;</span> SERVICE CONSOLE READY. RESTRICTED TO AUTHORIZED OFFICERS.
+              </div>
+
+              <!-- ACTION SUBMIT BUTTON -->
+              <button type="submit" class="btn-engage-terminal service-btn" id="btnServiceAuthSubmit">
+                <span class="engage-glow"></span>
+                <span class="engage-text">🛡️ AUTHENTICATE &amp; ENGAGE SERVICE CONSOLE</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- TERMINAL FOOTER -->
+      <div class="terminal-footer-bar">
+        <span>SAG-AES-256 ENCRYPTED</span>
+        <span>NODE: NEW DELHI / NORTHERN COMMAND</span>
+        <span>DRDO HARDENED SDR</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MAIN APPLICATION WORKBENCH
+  ======================================================== -->
+  <div class="field-container">
+    <!-- TOP MAST HEAD / OFFICIAL MINISTRY OF DEFENCE BRANDING -->
+    <header class="top-nav-bar">
+      <div class="gov-brand-cluster">
+        <!-- Official Tri-Services Emblem from User -->
+        <div class="emblem-container" title="Ministry of Defence Tri-Services Emblem | रक्षा मंत्रालय">
+          <img src="mod-logo.png" alt="Ministry of Defence Emblem" class="national-emblem-img">
+        </div>
+        <div class="gov-titles">
+          <div class="hindi-title">भारत सरकार &bull; रक्षा मंत्रालय</div>
+          <div class="eng-title">GOVERNMENT OF INDIA &bull; MINISTRY OF DEFENCE</div>
+          <div class="system-title">BHARAT-COM // TACTICAL SECURE SDR (BEL-MIL-SPEC)</div>
+        </div>
+      </div>
+
+      <div class="hud-quick-stats">
+        <div class="stat-pill tri-pill"><span class="tri-stripes"></span> HQ IDS NET</div>
+        <div class="stat-pill"><span class="pill-dot live"></span> SEC-NET: <span id="connStatus">ONLINE</span></div>
+        <div class="stat-pill"><span class="pill-dot sec"></span> AUTH-ID: <span id="activeEmpIdTag" class="text-emp-highlight">UNAUTHENTICATED</span></div>
+        <div class="stat-pill">UNITS: <span id="totalOnlineCount">1</span></div>
+        <button class="btn-console-switch" id="btnSwitchToConsole" style="display: none;" title="Open Master Operations Console">
+          🛡️ SERVICE CONSOLE
+        </button>
+        <button class="btn-console-switch" id="btnSwitchToRadio" style="display: none;" title="Open Tactical Radio Transceiver">
+          📻 TRANSCEIVER
+        </button>
+        <button class="btn-install-pwa" id="btnInstallPwa" style="display: none;" title="Install as Mobile/Desktop App">
+          📲 INSTALL APP
+        </button>
+        <button class="btn-logout-secure" id="btnLogoutSecure" title="Lock Radio & Return to Secure Login">
+          🔒 LOGOUT
+        </button>
+      </div>
+    </header>
+
+    <!-- MOBILE TACTICAL SEGMENT SELECTOR (ONLY VISIBLE ON MOBILE / TABLET VIEWPORTS) -->
+    <nav class="mobile-tactical-dock" id="mobileTacticalDock" aria-label="Mobile Tactical Navigation">
+      <button type="button" class="mob-dock-btn active" id="btnMobTabCenter" data-target="center">
+        <span class="dock-icon">📻</span>
+        <span class="dock-label">TRANSCEIVER</span>
+      </button>
+      <button type="button" class="mob-dock-btn" id="btnMobTabLeft" data-target="left">
+        <span class="dock-icon">📡</span>
+        <span class="dock-label">CHANNELS</span>
+      </button>
+      <button type="button" class="mob-dock-btn" id="btnMobTabRight" data-target="right">
+        <span class="dock-icon">📋</span>
+        <span class="dock-label">LOGS &amp; SQUAD</span>
+      </button>
+    </nav>
+
+    <main class="radio-workbench" id="radioWorkbench">
+      <!-- LEFT FLANK: CHANNEL SELECTOR & RADAR ROSTER -->
+      <aside class="tactical-sidebar left-panel" id="rackLeftFlank">
+        <div class="panel-header">
+          <h3><span class="panel-icon">📡</span> DEFENCE FREQUENCY PRESETS</h3>
+          <span class="sub-label">TRI-SERVICES TACTICAL SDR (VHF/UHF)</span>
+        </div>
+
+        <div class="channel-matrix" id="channelListContainer">
+          <!-- Dynamically populated from JS -->
+        </div>
+
+        <div class="quick-controls-card">
+          <div class="card-title">AUDIO DSP FILTER (BEL CQB SPEC)</div>
+          <div class="filter-toggle-group">
+            <button class="toggle-btn active" id="btnFilterTactical" title="350Hz-3400Hz Military bandpass + drive + mic click">
+              <span class="indicator-led"></span> TACTICAL (MIL-SPEC)
+            </button>
+            <button class="toggle-btn" id="btnFilterHifi" title="Uncompressed Clean Studio Voice">
+              <span class="indicator-led"></span> CLEAR (HI-FI)
+            </button>
+          </div>
+        </div>
+
+        <div class="quick-controls-card">
+          <div class="card-title">ROGER BEEP TONE</div>
+          <select id="rogerBeepSelect" class="tactical-select">
+            <option value="motorola">Indian Army Tactical Chirp</option>
+            <option value="twotone">IAF Air Defence 2-Tone</option>
+            <option value="quindar">ISRO / Space Quindar Tone</option>
+            <option value="classic">Mechanical Squelch Click</option>
+            <option value="none">Muted / Stealth Recon Mode</option>
+          </select>
+        </div>
+
+        <!-- TRI-SERVICES SQUADRON TAG -->
+        <div class="tri-services-card">
+          <div class="tri-badge army">थल सेना &bull; ARMY</div>
+          <div class="tri-badge navy">नौसेना &bull; NAVY</div>
+          <div class="tri-badge airforce">वायु सेना &bull; AIR FORCE</div>
+        </div>
+      </aside>
+
+      <!-- CENTER CHASSIS: THE PHYSICAL TRANSCEIVER -->
+      <section class="transceiver-chassis-wrapper" id="rackCenterTransceiver">
+        <!-- Physical Antenna & Top Hardware Knobs -->
+        <div class="hardware-top-bay">
+          <div class="antenna-assembly">
+            <div class="antenna-tip"></div>
+            <div class="antenna-whip"></div>
+            <div class="antenna-collar"></div>
+          </div>
+
+          <div class="rotary-knobs-bank">
+            <div class="knob-assembly">
+              <span class="knob-label">VOL / PWR</span>
+              <div class="knob-control" id="volKnob">
+                <div class="knob-indicator" id="volIndicator"></div>
+              </div>
+              <span class="knob-value" id="volValue">85%</span>
+            </div>
+
+            <div class="knob-assembly">
+              <span class="knob-label">SQUELCH (SQL)</span>
+              <div class="knob-control" id="sqlKnob">
+                <div class="knob-indicator" id="sqlIndicator"></div>
+              </div>
+              <span class="knob-value" id="sqlValue">LVL 4</span>
+            </div>
+
+            <div class="knob-assembly">
+              <span class="knob-label">MIC SENS</span>
+              <div class="knob-control" id="gainKnob">
+                <div class="knob-indicator" id="gainIndicator"></div>
+              </div>
+              <span class="knob-value" id="gainValue">100%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Radio Body / Heavy-Duty Enclosure -->
+        <div class="transceiver-body" id="radioBody">
+          <!-- Corner Hardware Screws -->
+          <div class="chassis-screw top-left"></div>
+          <div class="chassis-screw top-right"></div>
+          <div class="chassis-screw bottom-left"></div>
+          <div class="chassis-screw bottom-right"></div>
+
+          <!-- Top Brand Badge with Tri-Services Shield Mini-Badge -->
+          <div class="chassis-masthead">
+            <div class="masthead-left">
+              <img src="mod-logo.png" alt="MoD Shield" class="chassis-mini-logo">
+              <div class="mil-code">BHARAT-SDR-152(I)</div>
+            </div>
+            <div class="mfg-name">BHARAT ELECTRONICS LTD (BEL) / DRDO</div>
+            <div class="sec-label">RESTRICTED // अति गोपनीय</div>
+          </div>
+
+          <!-- MILITARY OLED / LCD SCREEN ASSEMBLY -->
+          <div class="screen-assembly">
+            <div class="screen-bezel">
+              <div class="screen-glass">
+                <div class="screen-scanlines"></div>
+                <div class="screen-glare"></div>
+
+                <div class="oled-display-content">
+                  <!-- OLED Header -->
+                  <div class="oled-status-bar">
+                    <div class="status-left">
+                      <span class="oled-badge" id="oledModeBadge">SDR-FM</span>
+                      <span class="oled-badge crypt" id="oledCryptoBadge">SAG-256</span>
+                      <span class="oled-badge vox-flag" id="oledVoxBadge">VOX: OFF</span>
+                    </div>
+                    <div class="status-center" id="oledFreqDisplay">142.850 MHz</div>
+                    <div class="status-right">
+                      <span class="rssi-meter-wrapper" title="Signal Strength">
+                        <span class="rssi-label">SIG:</span>
+                        <div class="rssi-bars" id="rssiBars">
+                          <span class="bar b1 active"></span>
+                          <span class="bar b2 active"></span>
+                          <span class="bar b3 active"></span>
+                          <span class="bar b4 active"></span>
+                          <span class="bar b5 active"></span>
+                        </div>
+                      </span>
+                      <span class="battery-meter" title="Radio Battery">
+                        <span class="bat-level" id="batLevel">98%</span>
+                        <span class="bat-icon"><span></span></span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- OLED Main Frequency / Channel Banner -->
+                  <div class="oled-main-banner">
+                    <div class="channel-number" id="oledChannelNumber">CH 01</div>
+                    <div class="channel-info-block">
+                      <div class="channel-name" id="oledChannelName">TRISHUL</div>
+                      <div class="channel-desc" id="oledChannelDesc">NORTHERN SECTOR RECON & PATROL</div>
+                    </div>
+                    <div class="transceiver-state-tag" id="transceiverStateTag">STANDBY</div>
+                  </div>
+
+                  <!-- REAL-TIME VOICE FLUCTUATION & SPECTRUM DISPLAY -->
+                  <div class="oscilloscope-container">
+                    <div class="scope-view-tabs">
+                      <button class="scope-tab-btn active" id="btnScopeWave">OSCILLOSCOPE</button>
+                      <button class="scope-tab-btn" id="btnScopeBars">32-BAND FFT</button>
+                    </div>
+
+                    <canvas id="scopeCanvas" width="480" height="85"></canvas>
+                    <div class="scope-grid-overlay"></div>
+                    <div class="scope-legend">
+                      <span class="scope-time">TX TIME: <span id="txDurationCounter">00:00.0</span></span>
+                      <span class="scope-carrier" id="carrierLabel">CARRIER SQUELCHED</span>
+                      <span class="scope-speaker" id="activeSpeakerLabel">NET IDLE</span>
+                    </div>
+                  </div>
+
+                  <!-- LIVE VOICE FLUCTUATIONS & VU DECIBEL METER -->
+                  <div class="live-voice-meter-bay">
+                    <div class="vu-meter-row">
+                      <span class="vu-title">VOICE MOD:</span>
+                      <div class="vu-bar-segments" id="vuSegments">
+                        <span class="seg green"></span>
+                        <span class="seg green"></span>
+                        <span class="seg green"></span>
+                        <span class="seg green"></span>
+                        <span class="seg green"></span>
+                        <span class="seg green"></span>
+                        <span class="seg amber"></span>
+                        <span class="seg amber"></span>
+                        <span class="seg red"></span>
+                        <span class="seg red"></span>
+                      </div>
+                      <span class="vu-db-readout" id="vuDbReadout">-48 dB</span>
+                    </div>
+                    <div class="voice-stats-row">
+                      <span>PITCH: <strong id="voicePitchVal">STEADY</strong></span>
+                      <span>MOD DEPTH: <strong id="voiceModDepth">0%</strong></span>
+                      <span>PEAK HOLD: <strong id="voicePeakHold">-inf</strong></span>
+                    </div>
+                  </div>
+
+                  <!-- OLED Footer: Tactical Telemetry -->
+                  <div class="oled-telemetry-bar">
+                    <div class="telem-item">
+                      <span class="lbl">CALLSIGN:</span>
+                      <strong class="val editable" id="myCallsignDisplay" title="Click to change your tactical callsign">GARUD-1</strong>
+                    </div>
+                    <div class="telem-item">
+                      <span class="lbl">GPS (MGRS):</span>
+                      <span class="val" id="myGridDisplay">43Q BK 9284 1024</span>
+                    </div>
+                    <div class="telem-item">
+                      <span class="lbl">KEY:</span>
+                      <span class="val text-green">[SPACE] / [T]</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- LED Indicator Bank -->
+            <div class="led-indicator-bank">
+              <div class="led-group" id="ledTxGroup">
+                <span class="led red" id="ledTx"></span>
+                <span class="led-label">TX</span>
+              </div>
+              <div class="led-group" id="ledRxGroup">
+                <span class="led green" id="ledRx"></span>
+                <span class="led-label">RX</span>
+              </div>
+              <div class="led-group" id="ledSecGroup">
+                <span class="led amber active" id="ledSec"></span>
+                <span class="led-label">SEC</span>
+              </div>
+              <div class="led-group" id="ledPwrGroup">
+                <span class="led blue active" id="ledPwr"></span>
+                <span class="led-label">PWR</span>
+              </div>
+              <div class="led-group" id="ledBusyGroup">
+                <span class="led yellow" id="ledBusy"></span>
+                <span class="led-label">BUSY</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPEAKER GRILLE & ACOUSTIC APERTURES -->
+          <div class="speaker-grille">
+            <div class="grille-slot"></div>
+            <div class="grille-slot"></div>
+            <div class="grille-slot"></div>
+            <div class="grille-slot"></div>
+            <div class="grille-slot"></div>
+            <div class="grille-slot"></div>
+            <div class="mic-aperture" title="Electret Dynamic Mic Pickup">
+              <span>MIC</span>
+              <div class="aperture-hole"></div>
+            </div>
+          </div>
+
+          <!-- PUSH-TO-TALK BUTTON BAY (HERO CONTROLLER) -->
+          <div class="ptt-controller-bay">
+            <div class="ptt-sub-controls">
+              <div class="mode-selector">
+                <span class="mode-label">PTT MODE:</span>
+                <button class="mode-chip active" id="btnModeHold" title="Hold to talk, release to listen">MOMENTARY</button>
+                <button class="mode-chip" id="btnModeLatch" title="Click to lock mic ON, click to unlock">LATCH</button>
+              </div>
+
+              <div class="vox-toggle-wrapper">
+                <button class="vox-btn" id="btnVoxToggle" title="Voice Activated Transmission">
+                  <span class="vox-led"></span> VOX AUTO
+                </button>
+              </div>
+            </div>
+
+            <!-- THE MASSIVE TACTILE PTT BUTTON -->
+            <div class="ptt-button-outer-frame">
+              <button class="tactical-ptt-button" id="pttButton" type="button">
+                <div class="ptt-inner-tread">
+                  <div class="ptt-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                      <line x1="12" y1="19" x2="12" y2="23"></line>
+                      <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                  </div>
+                  <div class="ptt-text-group">
+                    <span class="ptt-primary-text">PUSH TO TALK</span>
+                    <span class="ptt-sub-text">HOLD [SPACE] / [T] OR CLICK</span>
+                  </div>
+                </div>
+                <div class="ptt-ripple-ring"></div>
+              </button>
+            </div>
+
+            <!-- Secondary Keypad / Quick Channel Buttons -->
+            <div class="tactical-keypad">
+              <button class="key-btn" data-key="1"><span>1</span><small>TRISHUL</small></button>
+              <button class="key-btn" data-key="2"><span>2</span><small>BRAHMOS</small></button>
+              <button class="key-btn" data-key="3"><span>3</span><small>GARUD</small></button>
+              <button class="key-btn" data-key="4"><span>4</span><small>MARCOS</small></button>
+              <button class="key-btn" data-key="5"><span>5</span><small>DHANUSH</small></button>
+              <button class="key-btn" data-key="6"><span>6</span><small>AGNI</small></button>
+              <button class="key-btn" data-key="7"><span>7</span><small>SURYAKIRAN</small></button>
+              <button class="key-btn alert-key" data-key="8" id="btnQuickEmergency"><span>9</span><small>GUARD</small></button>
+            </div>
+          </div>
+
+          <!-- BOTTOM HARDWARE GUARD & DISTRESS TOGGLE -->
+          <div class="chassis-bottom-bay">
+            <div class="distress-guard-cover" id="distressGuard">
+              <div class="hazard-stripes"></div>
+              <button class="distress-beacon-button" id="btnDistressMayday">
+                <span class="distress-icon">🚨</span>
+                <span class="distress-text">PRIORITY MAYDAY / DISTRESS BEACON</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT FLANK: TRANSMISSION LOG & SQUAD RADAR -->
+      <aside class="tactical-sidebar right-panel" id="rackRightFlank">
+        <!-- OPERATOR CALLSIGN & LOCATION CARD -->
+        <div class="tactical-card operator-profile-card">
+          <div class="card-header">
+            <h3><span class="panel-icon">🎖️</span> OPERATOR CLEARANCE</h3>
+            <button class="card-btn-action" id="btnEditCallsign">CHANGE</button>
+          </div>
+          <div class="profile-details">
+            <div class="callsign-badge" id="profileCallsignBadge">STANDBY</div>
+            <div class="squad-info">
+              <div>DEFENCE ID: <strong class="text-emp-highlight" id="profileEmpId">LOCKED</strong></div>
+              <div>ASSIGNED CORPS: <span class="val-highlight">HQ INTEGRATED DEFENCE STAFF</span></div>
+              <div>SECURITY CLEARANCE: <span class="val-highlight">RESTRICTED // LEVEL 5</span></div>
+              <div>CRYPTO CIPHER: <span class="val-highlight">SAG-AES-256 (DRDO)</span></div>
+              <div>HARDWARE KEY: <span class="val-highlight">AUTHENTICATED</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVE TRANSMISSION AUDIO REPLAY LOG -->
+        <div class="tactical-card replay-card">
+          <div class="card-header">
+            <h3><span class="panel-icon">📼</span> COMMS REPLAY LOG</h3>
+            <span class="badge-count" id="replayCount">0 BURSTS</span>
+          </div>
+          <p class="section-help">Missed a battlefield message? Replay the last 10 incoming radio bursts with original audio:</p>
+          <div class="replay-stream-list" id="replayList">
+            <div class="empty-state">No transmissions logged yet. Channel is quiet.</div>
+          </div>
+        </div>
+
+        <!-- SQUAD NET ROSTER -->
+        <div class="tactical-card squad-roster-card">
+          <div class="card-header">
+            <h3><span class="panel-icon">👥</span> ACTIVE FIELD UNITS</h3>
+            <span class="badge-count" id="rosterCount">1 UNIT</span>
+          </div>
+          <div class="roster-list" id="rosterList">
+            <!-- Populated via WebSocket -->
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- ========================================================
+         C4I SERVICE OPERATIONS & SURVEILLANCE CONSOLE
+    ======================================================== -->
+    <section class="service-console-dashboard" id="serviceConsoleDashboard" style="display: none; flex-direction: column;">
+      <!-- CONSOLE TOP BANNER -->
+      <div class="console-top-banner">
+        <div class="console-title-cluster">
+          <div class="console-badge-shield">🛡️</div>
+          <div>
+            <div class="console-heading">HQ INTEGRATED DEFENCE STAFF &bull; C4I SERVICE OPERATIONS</div>
+            <div class="console-subheading">Central Network Management &bull; Dynamic ID Registry &bull; Multi-Channel Wiretap & Audio Logger</div>
+          </div>
+        </div>
+        <div class="console-telemetry-strip">
+          <div class="c-stat-pill"><span class="c-dot live"></span> WIRETAP: <strong class="text-green">ARMED (ALL NETS)</strong></div>
+          <div class="c-stat-pill"><span class="c-dot live"></span> CENTRAL REGISTRY: <strong class="text-green">SYNCED</strong></div>
+          <div class="c-stat-pill"><span class="c-dot gold"></span> ACCESS LEVEL: <strong class="text-gold">MASTER C4I</strong></div>
+          <button class="btn-console-act" id="btnExportAuditLog" title="Export Full Comms Log to JSON">
+            📥 EXPORT AUDIT LOG
+          </button>
+          <button class="btn-console-act btn-return-radio" id="btnConsoleReturnRadio" title="Switch to Tactical SDR Transceiver">
+            📻 OPEN TRANSCEIVER
+          </button>
+        </div>
+      </div>
+
+      <!-- SERVICE CONSOLE NAVIGATION TABS -->
+      <div class="console-nav-tabs">
+        <button class="c-tab-btn active" data-tab="personnelRegistry">
+          <span class="tab-icon">🪪</span>
+          <span>PERSONNEL &amp; ID REGISTRY</span>
+        </button>
+        <button class="c-tab-btn" data-tab="commsRecording">
+          <span class="tab-icon">📼</span>
+          <span>MASTER WIRETAP &amp; AUDIO RECORDER</span>
+        </button>
+        <button class="c-tab-btn" data-tab="spectrumLock">
+          <span class="tab-icon">📡</span>
+          <span>SPECTRUM &amp; CARRIER OVERRIDE</span>
+        </button>
+        <button class="c-tab-btn" data-tab="activeNodes">
+          <span class="tab-icon">👥</span>
+          <span>ACTIVE NODE MATRIX &amp; KILLSWITCH</span>
+        </button>
+        <button class="c-tab-btn" data-tab="allNetOverride">
+          <span class="tab-icon">🚨</span>
+          <span>HQ ALL-NET PRIORITY DIRECTIVE</span>
+        </button>
+      </div>
+
+      <!-- TAB PANE 1: PERSONNEL & DEFENCE ID REGISTRY -->
+      <div class="console-tab-pane active" id="panePersonnelRegistry" style="display: block;">
+        <div class="console-split-grid">
+          <!-- SUB-PANEL A: ASSIGN NEW DEFENCE ID -->
+          <div class="c-card c-assign-card">
+            <div class="c-card-header">
+              <h4><span class="c-icon">⚡</span> ASSIGN &amp; REGISTER DEFENCE EMPLOYEE ID</h4>
+              <span class="c-card-sub">Dynamic credential allocation with immediate link authorization</span>
+            </div>
+            <form id="formAssignDefenceId" class="c-assign-form" autocomplete="off">
+              <div class="form-row">
+                <label for="newEmpIdInput">12-DIGIT DEFENCE EMPLOYEE ID:</label>
+                <div class="id-gen-wrapper">
+                  <input type="text" id="newEmpIdInput" class="c-input" placeholder="ENTER 12-DIGIT DEFENCE ID" maxlength="16" required>
+                  <button type="button" class="btn-gen-id" id="btnAutoGenerateId" title="Generate Valid Tactical ID">🎲 AUTO-GEN</button>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="newCallsignInput">TACTICAL CALLSIGN:</label>
+                <input type="text" id="newCallsignInput" class="c-input" placeholder="E.G. UNIT-01, SQUAD-LEAD" maxlength="14" required>
+              </div>
+
+              <div class="form-row">
+                <label for="newCorpsSelect">DEFENCE CORPS / ASSIGNED COMMAND:</label>
+                <select id="newCorpsSelect" class="c-input c-select">
+                  <option value="HQ INTEGRATED DEFENCE STAFF">HQ INTEGRATED DEFENCE STAFF</option>
+                  <option value="ARMY SPECIAL FORCES (PARA-SF)">ARMY SPECIAL FORCES (PARA-SF)</option>
+                  <option value="NAVY COMBAT DIVERS (MARCOS)">NAVY COMBAT DIVERS (MARCOS)</option>
+                  <option value="AIR FORCE GARUD COMMANDOS">AIR FORCE GARUD COMMANDOS</option>
+                  <option value="STRATEGIC FORCES COMMAND">STRATEGIC FORCES COMMAND</option>
+                  <option value="NORTHERN COMMAND BORDER PATROL">NORTHERN COMMAND BORDER PATROL</option>
+                  <option value="WESTERN FLEET MARITIME OPS">WESTERN FLEET MARITIME OPS</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="newClearanceSelect">SECURITY CLEARANCE LEVEL:</label>
+                <select id="newClearanceSelect" class="c-input c-select">
+                  <option value="LEVEL 5 (TOP SECRET)">LEVEL 5 // COSMIC TOP SECRET</option>
+                  <option value="LEVEL 4 (SECRET)" selected>LEVEL 4 // DEFENCE SECRET</option>
+                  <option value="LEVEL 3 (CONFIDENTIAL)">LEVEL 3 // CONFIDENTIAL</option>
+                  <option value="LEVEL 2 (RESTRICTED)">LEVEL 2 // RESTRICTED</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="newPasscodePin">SECURITY PASSCODE / PIN:</label>
+                <input type="password" id="newPasscodePin" class="c-input" placeholder="ASSIGN ACCESS PIN" maxlength="16" autocomplete="new-password" required>
+              </div>
+
+              <button type="submit" class="btn-c-submit" id="btnSubmitAssignId">
+                <span>⚡ ISSUE &amp; REGISTER DEFENCE CREDENTIALS</span>
+              </button>
+              <div class="assign-feedback" id="assignFeedback"></div>
+            </form>
+          </div>
+
+          <!-- SUB-PANEL B: ACTIVE AUTHORIZED REGISTRY TABLE -->
+          <div class="c-card c-table-card">
+            <div class="c-card-header">
+              <div class="header-split">
+                <h4><span class="c-icon">🗄️</span> AUTHORIZED DEFENCE PERSONNEL DATABASE</h4>
+                <div class="c-stat-group">
+                  <span class="c-counter">TOTAL: <strong id="totalRegCount">3</strong></span>
+                  <span class="c-counter text-green">ACTIVE: <strong id="activeRegCount">3</strong></span>
+                  <span class="c-counter text-red">REVOKED: <strong id="revokedRegCount">0</strong></span>
+                </div>
+              </div>
+              <input type="text" id="searchRegistryInput" class="c-search-input" placeholder="🔍 Filter by Employee ID, Callsign or Corps...">
+            </div>
+
+            <div class="c-table-container">
+              <table class="c-table" id="registryTable">
+                <thead>
+                  <tr>
+                    <th>DEFENCE ID</th>
+                    <th>CALLSIGN</th>
+                    <th>CORPS / BRANCH</th>
+                    <th>CLEARANCE</th>
+                    <th>STATUS</th>
+                    <th>ISSUED</th>
+                    <th>AUTHORITY ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody id="registryTableBody">
+                  <!-- Dynamically populated from server authorizedPersonnel Map -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB PANE 2: MASTER WIRETAP & AUDIO RECORDER -->
+      <div class="console-tab-pane" id="paneCommsRecording" style="display: none;">
+        <div class="wiretap-dashboard-grid">
+          <!-- LIVE WIRETAP MONITOR & CHANNELS -->
+          <div class="c-card wiretap-monitor-card">
+            <div class="c-card-header">
+              <h4><span class="c-icon">📻</span> ALL-CHANNEL LIVE SPECTRUM WIRETAP</h4>
+              <span class="badge-live-pulse">LIVE MONITORED</span>
+            </div>
+            <p class="c-help-txt">Service Department monitors all 8 tactical channels simultaneously. Incoming transmissions are tapped, visualized, and stored in the blackbox log:</p>
+            <div class="channels-wiretap-strip" id="channelsWiretapStrip">
+              <!-- Dynamically populated with active signal states -->
+            </div>
+          </div>
+
+          <!-- MASTER TRANSMISSION REPLAY & AUDIT TABLE -->
+          <div class="c-card wiretap-logs-card">
+            <div class="c-card-header">
+              <div class="header-split">
+                <h4><span class="c-icon">📼</span> MASTER COMMS INTERCEPT &amp; AUDIO ARCHIVE</h4>
+                <span class="badge-count" id="serviceLogCount">0 TRANSMISSIONS RECORDED</span>
+              </div>
+            </div>
+
+            <div class="c-table-container">
+              <table class="c-table" id="wiretapLogTable">
+                <thead>
+                  <tr>
+                    <th>BURST ID</th>
+                    <th>TIMESTAMP (IST)</th>
+                    <th>CHANNEL / FREQ</th>
+                    <th>TRANSMITTER</th>
+                    <th>DEFENCE ID</th>
+                    <th>DURATION</th>
+                    <th>INTERCEPT AUDIO</th>
+                    <th>ACTION</th>
+                  </tr>
+                </thead>
+                <tbody id="wiretapLogTableBody">
+                  <tr>
+                    <td colspan="8" class="text-center">No transmissions intercepted yet. Spectrum is clear.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB PANE 3: SPECTRUM & CARRIER LOCK OVERRIDE -->
+      <div class="console-tab-pane" id="paneSpectrumLock" style="display: none;">
+        <div class="c-card">
+          <div class="c-card-header">
+            <h4><span class="c-icon">⚡</span> DEFENCE FREQUENCY SPECTRUM &amp; CARRIER OVERRIDE</h4>
+            <span class="c-card-sub">Central carrier lock control: monitor half-duplex transmitters and forcefully release jammed or stuck carriers</span>
+          </div>
+          <div class="carrier-override-grid" id="carrierOverrideGrid">
+            <!-- Dynamically populated with channel lock states -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB PANE 4: ACTIVE NODE MATRIX & KILLSWITCH -->
+      <div class="console-tab-pane" id="paneActiveNodes" style="display: none;">
+        <div class="c-card">
+          <div class="c-card-header">
+            <div class="header-split">
+              <h4><span class="c-icon">🌐</span> ACTIVE NETWORK NODES (CONNECTED CLIENTS)</h4>
+              <span class="badge-count" id="activeNodesCount">0 CONNECTED</span>
+            </div>
+            <span class="c-card-sub">Real-time socket telemetry. Service Department can forcefully terminate any rogue, unauthorized, or compromised node.</span>
+          </div>
+          <div class="c-table-container">
+            <table class="c-table" id="activeNodesTable">
+              <thead>
+                <tr>
+                  <th>NODE ID</th>
+                  <th>CALLSIGN</th>
+                  <th>DEFENCE EMPLOYEE ID</th>
+                  <th>TUNED CHANNEL</th>
+                  <th>CONNECTED AT</th>
+                  <th>NODE TYPE</th>
+                  <th>REMOTE KILLSWITCH</th>
+                </tr>
+              </thead>
+              <tbody id="activeNodesTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB PANE 5: HQ ALL-NET PRIORITY DIRECTIVE -->
+      <div class="console-tab-pane" id="paneAllNetOverride" style="display: none;">
+        <div class="c-card directive-sender-card">
+          <div class="c-card-header">
+            <h4><span class="c-icon">🚨</span> TRANSMIT HQ ALL-NET EMERGENCY OVERRIDE DIRECTIVE</h4>
+            <span class="c-card-sub">Dispatches an immediate high-priority alert banner with audio alert to all active defence units across all frequencies.</span>
+          </div>
+          <form id="formAllNetDirective" class="directive-form">
+            <div class="form-row">
+              <label for="directivePriority">DIRECTIVE PRIORITY CLASSIFICATION:</label>
+              <select id="directivePriority" class="c-input c-select">
+                <option value="FLASH IMMEDIATE">FLASH OPERATIONAL IMMEDIATE // प्राथमिकता आदेश</option>
+                <option value="DEFCON 2 ALERT">DEFCON 2 // TACTICAL AIR/GROUND THREAT</option>
+                <option value="RADIO SILENCE">PROTOCOL BRAVO // MANDATORY RADIO SILENCE</option>
+                <option value="GENERAL HQ BULLETIN">HQ ROUTINE JOINT STAFF BULLETIN</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="directiveMessage">DIRECTIVE TEXT (TRANSMITTED TO ALL FIELD SCREENS):</label>
+              <textarea id="directiveMessage" class="c-input c-textarea" rows="4" placeholder="ENTER HIGH-PRIORITY COMMAND DIRECTIVE (E.G. 'ALL SECTORS: COMMENCE PHASE 2 SATELLITE COMMS LINK. MAINTAIN SENTRY GUARD.')" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-broadcast-directive" id="btnSendDirective">
+              <span>🚨 TRANSMIT TO ALL FIELD OPERATORS &bull; सम्पूर्ण नेटवर्क प्रसारण</span>
+            </button>
+            <div class="directive-feedback" id="directiveFeedback"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER HUD -->
+    <footer class="bottom-hud-bar">
+      <div class="hud-item"><span class="hud-key">HOTKEYS:</span> [SPACE / T] = PTT &nbsp;|&nbsp; [1 - 8] = CHANNEL HOP &nbsp;|&nbsp; [M] = MUTE &nbsp;|&nbsp; [V] = VOX AUTO</div>
+      <div class="hud-item"><span class="hud-key">MINISTRY OF DEFENCE:</span> Government of India &bull; BEL Tactical Radio System &bull; Version 5.0-SEC</div>
+    </footer>
+  </div>
+
+  <!-- ALL-NET HQ DIRECTIVE MODAL (FOR OPERATORS) -->
+  <div class="tactical-modal-backdrop" id="allNetDirectiveModal" style="display: none;">
+    <div class="tactical-modal directive-modal">
+      <div class="modal-header directive-modal-header">
+        <h4><span class="directive-flash-icon">🚨</span> HQ PRIORITY ALL-NET DIRECTIVE // रक्षा मंत्रालय</h4>
+        <button class="modal-close-btn" id="directiveCloseBtn">✕</button>
+      </div>
+      <div class="modal-body directive-modal-body">
+        <div class="directive-sender-strip" id="directiveSenderStrip">SENDER: DIRECTORATE OF COMMUNICATIONS (HQ IDS)</div>
+        <div class="directive-box-content" id="directiveMessageContent">ATTENTION ALL DEFENCE UNITS: PRIORITY DIRECTIVE TRANSMISSION INCOMING.</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-confirm directive-ack-btn" id="btnAckDirective">✓ ACKNOWLEDGE DIRECTIVE // पुष्टि की गई</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALLSIGN EDIT MODAL -->
+  <div class="tactical-modal-backdrop" id="callsignModal">
+    <div class="tactical-modal">
+      <div class="modal-header">
+        <h4>ASSIGN TACTICAL CALLSIGN // रक्षा मंत्रालय</h4>
+        <button class="modal-close-btn" id="modalCloseBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <label for="callsignInput">ENTER TACTICAL IDENTIFIER (MAX 14 CHARS):</label>
+        <input type="text" id="callsignInput" maxlength="14" placeholder="E.G. GARUD-1, PARA-SF, MARCOS-6" class="tactical-input">
+        <div class="preset-suggestions">
+          <button class="chip-suggest">GARUD-1</button>
+          <button class="chip-suggest">PARA-SF</button>
+          <button class="chip-suggest">MARCOS-6</button>
+          <button class="chip-suggest">GORKHA-9</button>
+          <button class="chip-suggest">VIKRAM-7</button>
+          <button class="chip-suggest">TRISHUL-LEAD</button>
+          <button class="chip-suggest">CHETAK-4</button>
+          <button class="chip-suggest">RUDRA-ACTUAL</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="btnCancelCallsign">CANCEL</button>
+        <button class="btn-confirm" id="btnSaveCallsign">SAVE IDENTIFIER</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

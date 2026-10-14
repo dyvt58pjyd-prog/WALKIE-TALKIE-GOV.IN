@@ -1,0 +1,21 @@
+{
+  "name": "bharat-com-tactical-walkie-talkie",
+  "version": "1.0.0",
+  "description": "Tactical Software Defined Radio (SDR) Intercom - Ministry of Defence, Government of India",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["walkie-talkie", "webaudio", "websockets", "tactical-radio", "defence", "india"],
+  "author": "Government of India - Ministry of Defence",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.3.0",
+    "ws": "^8.22.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
