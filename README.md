@@ -2,6 +2,8 @@
 ### रक्षा मंत्रालय | Ministry of Defence — Government of India
 **BEL / DRDO Tactical Software Defined Radio (SDR) Intercom System**
 
+🔗 **Live GitHub Pages URL:** [https://dyvt58pjyd-prog.github.io/WALKIE-TALKIE-GOV.IN/](https://dyvt58pjyd-prog.github.io/WALKIE-TALKIE-GOV.IN/)
+
 ---
 
 ## 🎖️ Overview
